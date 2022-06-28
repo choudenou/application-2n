@@ -12,6 +12,8 @@ urlpatterns = [
     path('inscription', views.inscripton_page, name="inscription_page"),
     path('home/<str:pk>', views.home, name="home"),  
     path('tableau/<str:pk>', views.home, name="tableau"),  
+    path('statiq', views.statistique, name="statistique"), 
+    
     
     
     path('pdf_interv', views.pdf_interv, name='pdf_interv'),
@@ -30,6 +32,5 @@ urlpatterns = [
     path('detail_panne',views.detail_panne, name='detail_panne'),
     path('modifier_intervention/<str:pk>',views.modifier_intervention, name='modifier_intervention'),
     path('population-chart/', views.population_chart, name='population-chart'), 
-    path('pie-chart/', views.pie_chart, name='pie-chart'), 
     path('ajax/load-mat/', views.load_materiel, name='ajax_load_mat')
 ]

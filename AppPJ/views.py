@@ -25,6 +25,8 @@ from django.core.paginator import Paginator
 from django.db.models import Sum
 from django.http import JsonResponse
 from django.urls import reverse_lazy
+import json
+
 
 
 def home(request,pk):
@@ -33,9 +35,15 @@ def home(request,pk):
     var_panne_count = Panne.objects.all().count()
     var_mat_count = Materiel.objects.all().count() 
     var_cout_interv = Intervention.objects.all().aggregate(thedata=Sum('cout_de_reparation'))
+    se_no = Intervention.objects.filter(Etat_intervention='True').count()
+    se_no = int(se_no)
+    print('Number of Software Engineering Students Are',se_no)
+    sec_no = Intervention.objects.filter(Etat_intervention='False').count()
+    sec_no = int(sec_no)
+    print('Number of Computer Security Students Are',sec_no)
     
     
-    return render(request, 'pages/index.html', {'list_ag':list_ag,'var_interv_count':var_interv_count,'var_panne_count':var_panne_count,'var_mat_count':var_mat_count,'var_cout_interv':var_cout_interv})
+    return render(request, 'pages/index.html', {'list_ag':list_ag,'var_interv_count':var_interv_count,'var_panne_count':var_panne_count,'var_mat_count':var_mat_count,'var_cout_interv':var_cout_interv,'se_no':se_no,'sec_no':sec_no})
     return render(request, 'pages/index.html')
 
 
@@ -288,16 +296,32 @@ def population_chart(request):
         'data': data,
     })
     
-def pie_chart(request):
-    labels = []
-    data = []
+def statistique(request):
+    cs_no = Panne.objects.filter(Etat_panne='Encours').count()
+    cs_no = int(cs_no)
+    print('Number of Computer Science Students Are',cs_no)
 
-    queryset = Intervention.objects.order_by('-cout_de_reparation')
-    for city in queryset:
-        labels.append(city.panne_concerner)
-        data.append(city.cout_de_reparation)
+    ce_no = Panne.objects.filter(Etat_panne='En attente').count()
+    ce_no = int(ce_no)
+    print('Number of Computer Engineering Students Are',ce_no)
 
-    return render(request, 'pie_chart.html', {
-        'labels': labels,
-        'data': data,
-    })
+
+
+    se_no = Intervention.objects.filter(Etat_intervention='True').count()
+    se_no = int(se_no)
+    print('Number of Software Engineering Students Are',se_no)
+
+    sec_no = Intervention.objects.filter(Etat_intervention='False').count()
+    sec_no = int(sec_no)
+    print('Number of Computer Security Students Are',sec_no)
+
+    gender_list = ['Encours', 'En attente']
+    gender_number = [cs_no, ce_no]
+    
+    gender_list_interv = ['Intervention Termine', 'Intervention En manque']
+    gender_number_interv = [se_no, sec_no]
+    
+
+    context = {'gender_list':gender_list, 'gender_number':gender_number,'gender_list_interv':gender_list_interv,'gender_number_interv':gender_number_interv}
+    return render(request, 'pages/dashboard.html', context)
+
